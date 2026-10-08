@@ -13,28 +13,6 @@ st.set_page_config(
 # Estilos CSS Personalizados Avanzados - Estética Neón Fluorescente
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave&family=Rock+Salt&family=Caveat:wght@700&display=swap');
-
-    .title-graffiti {
-        font-family: 'Permanent Marker', 'Sedgwick Ave', 'Rock Salt', cursive !important;
-        font-size: 2.8em !important;
-        color: #39FF14 !important;
-        text-shadow: 0 0 6px #39FF14, 0 0 14px rgba(57, 255, 20, 0.4), 2px 2px 4px #000000 !important;
-        text-align: center;
-        letter-spacing: 1.5px;
-        margin-bottom: 4px;
-        line-height: 1.2;
-    }
-    .subtitle-neon {
-        font-size: 1.02em;
-        color: #FF007F;
-        text-shadow: 0 0 8px rgba(255, 0, 127, 0.5);
-        text-align: center;
-        font-style: italic;
-        font-weight: 600;
-        margin-bottom: 22px;
-    }
-
     .stApp {
         background-color: #0A0E17 !important;
         color: #F0F4F8 !important;
@@ -86,12 +64,15 @@ st.markdown("""
     }
 
     .title-neon {
-        font-size: 2.3em;
-        font-weight: 800;
-        color: #00F0FF;
-        text-shadow: 0 0 12px #00F0FF, 0 0 25px rgba(0, 240, 255, 0.6);
-        text-align: center;
-        margin-bottom: 5px;
+        font-family: 'Freestyle Script', 'Brush Script MT', 'Sedgwick Ave', 'Caveat', cursive !important;
+        font-size: 3.8em !important;
+        font-weight: 400 !important;
+        color: #39FF14 !important;
+        text-shadow: 0 0 8px rgba(57, 255, 20, 0.8), 0 0 18px rgba(57, 255, 20, 0.4), 2px 2px 4px #000000 !important;
+        text-align: center !important;
+        margin-top: 10px !important;
+        margin-bottom: 2px !important;
+        letter-spacing: 1px !important;
     }
     .subtitle-neon {
         font-size: 1.1em;
@@ -183,47 +164,42 @@ st.markdown("""
 
     .box-vivencia {
         background-color: #121824;
-        border: 2px solid #00F0FF;
         border-radius: 14px;
         padding: 20px;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-        height: 100%;
+        border: 2px solid #00F0FF;
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+        min-height: 220px;
     }
+    
     .box-estrategia {
         background-color: #121824;
-        border: 2px solid #39FF14;
         border-radius: 14px;
         padding: 20px;
-        box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
-        height: 100%;
+        border: 2px solid #39FF14;
+        box-shadow: 0 0 12px rgba(57, 255, 20, 0.2);
+        min-height: 220px;
     }
-    .box-badge-cyan {
+
+    .box-title-vivencia {
         color: #00F0FF;
+        font-size: 1.2em;
         font-weight: 800;
-        font-size: 1.05em;
-        margin-bottom: 10px;
-        text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+        margin-bottom: 12px;
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
     }
-    .box-badge-green {
+
+    .box-title-estrategia {
         color: #39FF14;
+        font-size: 1.2em;
         font-weight: 800;
-        font-size: 1.05em;
-        margin-bottom: 10px;
-        text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+        margin-bottom: 12px;
+        text-shadow: 0 0 6px rgba(57, 255, 20, 0.4);
     }
-    .box-content {
+
+    .box-text {
         color: #F0F4F8;
         font-size: 1.02em;
         line-height: 1.6;
-        margin: 0;
-    }
-    .box-prompt-title {
-        color: #FF007F;
-        font-weight: 800;
-        font-size: 1.1em;
-        margin-top: 22px;
-        margin-bottom: 8px;
-        text-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
     }
 
 </style>
@@ -473,11 +449,11 @@ def cargar_pistas():
 
 pistas = cargar_pistas()
 
-st.markdown('<div class="title-graffiti">🎙️ Sintonía Docente</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle-neon">SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA</div>', unsafe_allow_html=True)
+st.markdown('<div class="title-neon">🎧 SINTONÍA DOCENTE</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle-neon">SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA • UNIVERSIDAD DE NARIÑO</div>', unsafe_allow_html=True)
 
-st.sidebar.markdown("<h2 style='color:#39FF14; font-family: Permanent Marker, Sedgwick Ave, cursive; text-shadow:0 0 6px #39FF14, 0 0 12px rgba(57,255,20,0.3); font-size:1.8em; margin-bottom:2px;'>🎙️ Sintonía Docente</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Ecosistema de Resignificación Docente</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='color:#00F0FF; text-shadow:0 0 8px #00F0FF;'>🎧 Sintonía Docente</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Ecosistema Multimodal de Resignificación</p>", unsafe_allow_html=True)
 st.sidebar.divider()
 
 modo_vista = st.sidebar.radio(
@@ -554,27 +530,33 @@ with tab_reproductor:
         else:
             st.info(f"🎧 **Audio detectado:** Al colocar la carpeta `sintonia_docente` con los archivos MP3 (`{doc_code}.mp3`), este reproductor los cargará automáticamente.")
 
-        col_viv, col_est = st.columns(2, gap="medium")
-        
-        with col_viv:
+        st.markdown(f'''
+        <div style="margin-top:20px; margin-bottom:15px;">
+            <span class="ficha-badge">CÓDIGO: {pista_actual.get("doc_id", "")}</span>
+            <span class="area-badge">ÁREA: {pista_actual.get("area", "")}</span>
+        </div>
+        ''', unsafe_allow_html=True)
+
+        col_box1, col_box2 = st.columns([1, 1], gap="medium")
+
+        with col_box1:
             st.markdown(f'''
             <div class="box-vivencia">
-                <div class="box-badge-cyan">💬 VIVENCIAS DEL PROFE ({pista_actual.get("doc_id", "")})</div>
-                <p class="box-content">{pista_actual.get("vivencia", "")}</p>
+                <div class="box-title-vivencia">💬 Vivencia del Profe:</div>
+                <div class="box-text">{pista_actual.get("vivencia", "")}</div>
             </div>
             ''', unsafe_allow_html=True)
 
-        with col_est:
+        with col_box2:
             st.markdown(f'''
             <div class="box-estrategia">
-                <div class="box-badge-green">💡 ESTRATEGIA DE AULA REPLICABLE</div>
-                <p class="box-content">{pista_actual.get("estrategia", "")}</p>
+                <div class="box-title-estrategia">💡 Estrategia de Aula Replicable:</div>
+                <div class="box-text">{pista_actual.get("estrategia", "")}</div>
             </div>
             ''', unsafe_allow_html=True)
 
-        st.markdown('''
-        <div class="box-prompt-title">🤖 Prompt de Inteligencia Artificial Sugerido (Listo para usar):</div>
-        ''', unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<h4 style='color:#39FF14;'>🤖 Prompt de Inteligencia Artificial Sugerido (Listo para usar):</h4>", unsafe_allow_html=True)
         st.code(pista_actual.get("prompt", ""), language="markdown")
 
 with tab_catalogo:
@@ -595,7 +577,7 @@ with tab_catalogo:
 with tab_metodologia:
     st.markdown("<h3 style='color:#00F0FF;'>ℹ️ Sobre el Ecosistema Multimodal 'Sintonía Docente'</h3>", unsafe_allow_html=True)
     st.markdown("""
-    **Investigación:** Resignificación de la Experiencia Docente sobre la Enseñanza Mediada por Tecnología  
+    **Investigación:** SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA  
     **Investigadora:** Catalina Díaz Chíquiza  
     **Asesora:** Mg. Lady Johana Gómez Bernal  
     **Institución:** Universidad de Nariño — Maestría en Educación Virtual (e-MEV)  
