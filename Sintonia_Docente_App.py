@@ -1,7 +1,8 @@
 import streamlit as st
 import os
+import json
 
-# Configuración de página
+# Configuración de la página
 st.set_page_config(
     page_title="Sintonía Docente - Ecosistema Transmedia",
     page_icon="🎧",
@@ -9,410 +10,496 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS Personalizados Avanzados - Estética Oscura Estilo Spotify (Negro #121212, Verde #1DB954, Ámbar #FFB703)
+# Estilos CSS Personalizados Avanzados - Estética Neón / Spotify
 st.markdown("""
 <style>
     /* Fondo general */
     .stApp {
-        background-color: #121212 !important;
+        background-color: #0A0E17 !important;
         color: #FFFFFF !important;
         font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     
     /* Barra lateral (Sidebar) */
     [data-testid="stSidebar"] {
-        background-color: #181818 !important;
-        border-right: 1px solid #282828 !important;
+        background-color: #121824 !important;
+        border-right: 1px solid #1E293B !important;
     }
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
     }
     
-    /* Texto de radio buttons y selectbox en la barra lateral */
-    div[role="radiogroup"] label p, div[data-baseweb="select"] span {
-        color: #FFFFFF !important;
-        font-size: 1.05em !important;
-        font-weight: 500 !important;
+    /* FORZAR TEXTO NEGRO EN EL MENU DESPLEGABLE (SELECTBOX) */
+    div[data-baseweb="select"] * {
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
+    div[data-baseweb="menu"] * {
+        color: #000000 !important;
+        background-color: #FFFFFF !important;
     }
 
-    /* Encabezado del Álbum */
+    /* Títulos Neón */
+    .title-neon {
+        color: #00F0FF;
+        font-size: 2.3em;
+        font-weight: 800;
+        text-align: center;
+        text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+        margin-bottom: 2px;
+    }
+    .subtitle-neon {
+        color: #E2E8F0;
+        font-size: 1.1em;
+        text-align: center;
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+
+    /* Encabezados Neón para Álbumes */
     .album-header-1 {
-        background: linear-gradient(135deg, #0d254c 0%, #1a3a6e 100%);
-        padding: 24px;
+        background: linear-gradient(135deg, #0D253A 0%, #16425B 100%);
+        padding: 20px;
         border-radius: 16px;
-        margin-bottom: 24px;
-        border: 1px solid #1e4a8a;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        margin-bottom: 20px;
+        border: 2px solid #00F0FF;
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
     }
     .album-header-2 {
-        background: linear-gradient(135deg, #5c1d24 0%, #852b36 100%);
-        padding: 24px;
+        background: linear-gradient(135deg, #3A0D25 0%, #5B163B 100%);
+        padding: 20px;
         border-radius: 16px;
-        margin-bottom: 24px;
-        border: 1px solid #a33543;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        margin-bottom: 20px;
+        border: 2px solid #FF007F;
+        box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
     }
-    
-    /* Tarjetas de Contenido (Cuadros) */
-    .track-card {
-        background-color: #181818;
-        padding: 24px;
-        border-radius: 16px;
-        border: 1px solid #2A2A2A;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+
+    /* Ficha Card */
+    .ficha-card {
+        background-color: #161F30;
+        padding: 22px;
+        border-radius: 14px;
+        border: 1px solid #334155;
+        margin-top: 15px;
     }
-    .prompt-card {
-        background-color: #14221A;
-        padding: 24px;
-        border-radius: 16px;
-        border: 1.5px solid #1DB954;
-        box-shadow: 0 6px 20px rgba(29,185,84,0.15);
-    }
-    
-    /* Badges y Etiquetas */
-    .badge-area {
-        background-color: #282828;
-        color: #FFB703 !important;
-        padding: 6px 14px;
-        border-radius: 20px;
+    .ficha-badge {
+        background-color: #00F0FF;
+        color: #000000;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 8px;
         font-size: 0.9em;
-        font-weight: 700;
         display: inline-block;
-        margin-bottom: 8px;
-        border: 1px solid #383838;
+        margin-right: 10px;
     }
-    .teacher-name {
-        color: #1DB954 !important;
-        font-size: 1.4em;
-        font-weight: 800;
-        margin-bottom: 4px;
-    }
-    .track-title {
-        color: #FFFFFF !important;
-        font-size: 1.6em;
-        font-weight: 800;
-        margin-bottom: 12px;
-    }
-    .copy-tip {
-        background-color: #1DB95422;
-        border: 1px solid #1DB954;
-        border-radius: 10px;
-        padding: 10px 14px;
-        color: #1DB954 !important;
+    .area-badge {
+        background-color: #38BDF8;
+        color: #000000;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 8px;
         font-size: 0.9em;
-        font-weight: 600;
-        margin-top: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        display: inline-block;
+    }
+
+    .section-title {
+        color: #00F0FF;
+        font-size: 1.15em;
+        font-weight: 700;
+        margin-top: 15px;
+        margin-bottom: 8px;
+        text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+    }
+    .text-box {
+        background-color: #1A2333;
+        padding: 16px;
+        border-radius: 10px;
+        border-left: 4px solid #00F0FF;
+        color: #F0F4F8;
+        font-size: 1.02em;
+        line-height: 1.6;
+    }
+
+    .prompt-box {
+        background-color: #181028;
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid #FF007F;
+        box-shadow: 0 0 12px rgba(255, 0, 127, 0.2);
+        color: #FF80BF;
+        font-size: 1.02em;
+        margin-top: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Base de datos unificada de las 14 Pistas (Sin nombres de colegios para proteger confidencialidad)
-pistas = {
-    "Álbum 1: El latido en el silencio": [
-        {
-            "id": "p1",
-            "titulo": "Pista 01: El Eco de las Miradas Perdidas",
-            "docente": "Claudia Avilés",
-            "area": "Preescolar y Primaria",
-            "imagen": "images/claudia_aviles.png",
-            "sinopsis": "Narración sobre la sorpresa inicial en preescolar, las anécdotas cotidianas del hogar tras la pantalla (papás que aparecían en toalla por descuido) y la preservación de la esencia humana en el aula virtual.",
-            "prompt": """Actúa como docente especialista en Educación Inicial. Diseña una guía didáctica de 3 dinámicas de pausas activas socioemocionales para niños de preescolar en entornos mixtos. 
+# Base de datos incrustada de las 19 pistas
+pistas = [
+  {
+    "doc_id": "DOC-01",
+    "pista_num": "01",
+    "titulo_full": "Pista 01: Las Voces Anónimas del Corazón",
+    "titulo_corto": "Las Voces Anónimas del Corazón",
+    "titulo": "Pista 01: Las Voces Anónimas del Corazón",
+    "area": "Francés y Lenguas Extranjeras",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "En medio del aislamiento y la timidez inicial de hablar en pantalla, surgió un ejercicio de escritura en el que los estudiantes pudieron expresar de forma sincera sus temores y emociones sin temor al qué dirán. La profe descubrió que el lenguaje es, ante todo, un puente para conectarse con la vida de los muchachos.",
+    "estrategia": "Proponer actividades reales y vivenciales en lengua extranjera: los alumnos describen su ropa favorita, objetos significativos de su habitación o lugares de su casa mediante dinámicas de participación cercana y respetuosa.",
+    "prompt": "🤖 Prompt para Práctica de Idiomas y Expresión Cotidiana\n\"Actúa como un profesor cercano y entusiasta de lenguas extranjeras. Diseña un ejercicio práctico de 15 minutos para que mis estudiantes describan en el idioma que aprenden objetos cotidianos de su entorno o prendas de vestir. Incluye 3 preguntas sencillas de calentamiento y una rúbrica cualitativa enfocada en la confianza y el esfuerzo comunicativo más que en la perfección gramatical.\""
+  },
+  {
+    "doc_id": "DOC-02",
+    "pista_num": "02",
+    "titulo_full": "Pista 02: Enseñar es Acompañar",
+    "titulo_corto": "Enseñar es Acompañar",
+    "titulo": "Pista 02: Enseñar es Acompañar",
+    "area": "Inglés (Educación Infantil y Primaria)",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "Al enseñar a niños pequeños durante el encierro, el profe utilizó Paint a pulso para simular los renglones del cuaderno y guiar los trazos con el mouse. Además, en fechas especiales organizó retos con objetos cotidianos de la casa, demostrando que el afecto y la creatividad mantienen vivo el entusiasmo de los niños.",
+    "estrategia": "Aprovechar la lúdica y los objetos de la vida diaria: organizar búsquedas del tesoro en casa o en el salón, juegos de asociación visual con dibujos sencillos y dinámicas corporales para afianzar el vocabulario básico.",
+    "prompt": "🤖 Prompt para Dinámicas Lúdicas y Vocabulario con Objetos Reales\n\"Actúa como docente especialista en didáctica de inglés para primaria. Diseña una guía con 4 dinámicas breves de juego activo usando objetos comunes del aula o del hogar (ropa, útiles, juguetes) para repasar vocabulario básico. Cada dinámica debe durar menos de 10 minutos y promover la participación espontánea sin presionar al niño.\""
+  },
+  {
+    "doc_id": "DOC-03",
+    "pista_num": "03",
+    "titulo_full": "Pista 03: Tarjetas de Afecto en la Pantalla",
+    "titulo_corto": "Tarjetas de Afecto en la Pantalla",
+    "titulo": "Pista 03: Tarjetas de Afecto en la Pantalla",
+    "area": "Cátedra de Educación Emocional / Filosofía y Humanidades",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "La docente comprendió que en momentos de incertidumbre enseñar no es acumular contenidos, sino acompañar al ser humano. Recordó con cariño cómo los niños crearon tarjetas digitales dibujadas por ellos mismos para expresar su gratitud, demostrando que el vínculo afectivo es el verdadero motor del aprendizaje.",
+    "estrategia": "Iniciar las jornadas con un 'círculo de la palabra' o pausa de conexión emocional: dedicar los primeros 10 minutos a escuchar cómo se sienten los estudiantes, usando preguntas socráticas sencillas y reflexivas.",
+    "prompt": "🤖 Prompt para Círculos de Palabra y Acompañamiento Socioemocional\n\"Actúa como un orientador escolar y profesor de humanidades. Diseña una guía de 15 minutos para realizar un círculo de palabra afectivo al inicio de la jornada con estudiantes. Incluye 3 preguntas sencillas y cálidas para abrir el diálogo sobre cómo se sienten y un cierre reflexivo que fomente la empatía en el grupo.\""
+  },
+  {
+    "doc_id": "DOC-04",
+    "pista_num": "04",
+    "titulo_full": "Pista 04: Ventanas Abiertas a la Cotidianidad",
+    "titulo_corto": "Ventanas Abiertas a la Cotidianidad",
+    "titulo": "Pista 04: Ventanas Abiertas a la Cotidianidad",
+    "area": "Educación Inicial y Preescolar",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "Con niños de preescolar, la profe transformó la rutina guiando las actividades paso a paso con imágenes sencillas y diapositivas coloridas. Descubrió que coordinarse con las familias y mantener la ternura en cada instrucción era la clave para que los más pequeños se sintieran seguros y motivados.",
+    "estrategia": "Estructurar secuencias visuales claras y cortas: combinar adivinanzas, pausas musicales y guías visuales sencillas para la familia, asegurando que cada niño avance a su propio ritmo sin saturarse.",
+    "prompt": "🤖 Prompt para Experiencias de Aprendizaje Visual e Infantil\n\"Actúa como una maestra experta en educación inicial. Ayúdame a diseñar una secuencia didáctica de 20 minutos basada en imágenes y cuentos breves para niños de preescolar. La actividad debe incluir una pausa activa de movimiento corporal y una recomendación práctica para coordinar fácilmente con los padres de familia.\""
+  },
+  {
+    "doc_id": "DOC-05",
+    "pista_num": "05",
+    "titulo_full": "Pista 05: El Visitante Inesperado",
+    "titulo_corto": "El Visitante Inesperado",
+    "titulo": "Pista 05: El Visitante Inesperado",
+    "area": "Ciencias Sociales y Desarrollo Humano (Primaria)",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "La docente dio el salto de la clase magistral tradicional al uso de relatos y presentaciones participativas. Recordó con emoción cómo las familias escuchaban sus clases de fondo y cómo pequeños detalles espontáneos permitieron romper la frialdad y acercar la historia a la vida real de sus estudiantes.",
+    "estrategia": "Transformar los contenidos teóricos en historias cercanas: utilizar casos cotidianos, imágenes icónicas y preguntas problematizadoras que inviten a los alumnos a dar su opinión y relacionar el tema con su entorno.",
+    "prompt": "🤖 Prompt para Generar Historias y Casos Cotidianos en Sociales\n\"Actúa como un profesor apasionado de ciencias sociales. Dame 3 ejemplos de relatos breves o dilemas sencillos basados en la vida cotidiana para explicar a niños de primaria la importancia de la convivencia y los derechos en la comunidad. Incluye preguntas orientadoras para abrir una conversación agradable en el salón.\""
+  },
+  {
+    "doc_id": "DOC-06",
+    "pista_num": "06",
+    "titulo_full": "Pista 06: Cumpleaños en Comunidad",
+    "titulo_corto": "Cumpleaños en Comunidad",
+    "titulo": "Pista 06: Cumpleaños en Comunidad",
+    "area": "Educación Física, Recreación y Deporte",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "El profesor enfrentó el enorme reto de adaptar la actividad física a espacios reducidos. Con ingenio, utilizó implementos de aseo, elementos del hogar y música motivadora para mantener a los estudiantes activos y saludables, demostrando que el movimiento es bienestar mental.",
+    "estrategia": "Diseñar circuitos motrices dinámicos con elementos caseros o del aula: organizar rutinas de ejercicios de bajo impacto, pausas activas y juegos de coordinación usando botellas plásticas, escobas o marcadores.",
+    "prompt": "🤖 Prompt para Pausas Activas y Circuitos Motrices Sencillos\n\"Actúa como un entrenador pedagógico y profesor de educación física. Diseña un circuito de 4 estaciones de movimiento y flexibilidad pensado para realizarse en espacios pequeños usando objetos cotidianos (sillas, botellas de agua). Describe cada ejercicio con instrucciones breves y divertidas para los estudiantes.\""
+  },
+  {
+    "doc_id": "DOC-07",
+    "pista_num": "07",
+    "titulo_full": "Pista 07: La Mirada Incompleta",
+    "titulo_corto": "La Mirada Incompleta",
+    "titulo": "Pista 07: La Mirada Incompleta",
+    "area": "Física y Ciencias Exactas",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "El docente descubrió que al explicar temas complejos como la física, ver a los abuelos y padres sentados al lado de los niños aprendiendo juntos enriquecía el proceso. Perdió el miedo a las herramientas digitales y comenzó a grabar explicaciones breves con pizarras visuales.",
+    "estrategia": "Utilizar la indagación guiada con simuladores y experimentos simples: plantear preguntas problema cotidianas (como el movimiento de una bicicleta o el calor de una taza) para explorar los conceptos antes de la fórmula.",
+    "prompt": "🤖 Prompt para Indagación Guiada en Ciencias y Física\n\"Actúa como un docente de ciencias exactas que busca hacer la física fácil y entretenida. Diseña una actividad de indagación de 20 minutos usando una situación común del hogar o un simulador interactivo gratuito. Formula 3 preguntas cotidianas que lleven al estudiante a deducir el concepto principal sin usar jerga matemática compleja.\""
+  },
+  {
+    "doc_id": "DOC-08",
+    "pista_num": "08",
+    "titulo_full": "Pista 08: El Refugio del Chat",
+    "titulo_corto": "El Refugio del Chat",
+    "titulo": "Pista 08: El Refugio del Chat",
+    "area": "Educación Infantil y Dimensión Afectiva",
+    "album": "Álbum 1: El Latido en el Silencio",
+    "vivencia": "La maestra comprendió la importancia de la empatía y el buen humor en el aula. Usó historias vivas, fondos animados y cuentos interactivos para mantener la chispa del aprendizaje en los niños, aprendiendo que la tecnología debe sumar calidez y no distancia.",
+    "estrategia": "Implementar dinámicas de ludificación y cuentos expresivos: intercalar momentos de lectura compartida con pausas de expresión gestual y artística que mantengan la alegría en el salón de clase.",
+    "prompt": "🤖 Prompt para Cuentos Interactivos y Ludificación Infantil\n\"Actúa como una educadora infantil experta en juego y literatura. Crea una idea para adaptar un cuento corto tradicional en una experiencia interactiva donde los niños participen haciendo sonidos, gestos o dibujando en un papel. Incluye 2 pausas de movimiento para mantenerlos atentos.\""
+  },
+  {
+    "doc_id": "DOC-09",
+    "pista_num": "09",
+    "titulo_full": "Pista 09: Dibujar el Alfabeto a Pulso",
+    "titulo_corto": "Dibujar el Alfabeto a Pulso",
+    "titulo": "Pista 09: Dibujar el Alfabeto a Pulso",
+    "area": "Español y Lengua Castellana",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "Tras el exceso de pantallas, la profesora decidió hacer una pausa consciente y regresar a lo análogo y manipulativo: recortar, armar, escribir a mano y tocar el papel. Redescubrió que la lectura crítica y la escritura creativa se disfrutan más cuando se sienten en las manos.",
+    "estrategia": "Alternar el trabajo digital con talleres análogos y manipulativos: crear diarios de lectura en papel, murales físicos de palabras y álbumes ilustrados hechos a mano por los mismos alumnos.",
+    "prompt": "🤖 Prompt para Talleres de Lectura Crítica y Creación Análoga\n\"Actúa como un profesor de literatura enfocado en el aprendizaje manipulativo y humano. Diseña un taller de lectura y escritura de 30 minutos donde los estudiantes analicen un poema o cuento corto usando materiales físicos (papel, colores, tijeras) para construir un diario ilustrado. Explica el paso a paso de forma clara.\""
+  },
+  {
+    "doc_id": "DOC-10",
+    "pista_num": "10",
+    "titulo_full": "Pista 10: La Metamorfosis de la Voz",
+    "titulo_corto": "La Metamorfosis de la Voz",
+    "titulo": "Pista 10: La Metamorfosis de la Voz",
+    "area": "Ciencias Naturales y Biología",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "El profesor no dejó morir la curiosidad científica y creó la estrategia de 'El laboratorio en mi cocina'. Con ingredientes caseros como repollo morado, vinagre y bicarbonato, demostró que la ciencia está viva en cualquier rincón del hogar.",
+    "estrategia": "Diseñar laboratorios caseros e indagar la naturaleza cercana: proponer pequeñas observaciones científicas con elementos cotidianos para que los estudiantes formulen hipótesis y experimenten sin peligro.",
+    "prompt": "🤖 Prompt para Experimentos Caseros e Indagación Científica\n\"Actúa como un biólogo y educador científico. Diseña una guía para un experimento casero completamente seguro que los estudiantes puedan realizar con elementos de la cocina (como sal, agua, aceite o plantas). Incluye la lista de materiales, 3 preguntas de hipótesis y una forma sencilla de presentar sus observaciones.\""
+  },
+  {
+    "doc_id": "DOC-11",
+    "pista_num": "11",
+    "titulo_full": "Pista 11: El Gimnasio de los Objetos Olvidados",
+    "titulo_corto": "El Gimnasio de los Objetos Olvidados",
+    "titulo": "Pista 11: El Gimnasio de los Objetos Olvidados",
+    "area": "Matemáticas en Primaria (1° a 3°)",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "La docente utilizó ruletas virtuales, juegos con semillas y desafíos de tienda escolar para que los niños de primaria perdieran el miedo a los números. Comprendió que cuando las matemáticas se juegan y se tocan, el aprendizaje perdura.",
+    "estrategia": "Gamificar el pensamiento numérico con material concreto: organizar retos de cálculo mental rápido usando fichas, juegos de mercado escolar y tableros interactivos sencillos.",
+    "prompt": "🤖 Prompt para Juegos Matemáticos y Pensamiento Numérico\n\"Actúa como una maestra experta en didáctica de las matemáticas para primaria. Diseña una actividad gamificada de 15 minutos llamada 'El mercado del aula' para practicar sumas y restas básicas usando fichas o papelitos. Incluye las reglas del juego y 3 retos numéricos divertidos adaptados a niños.\""
+  },
+  {
+    "doc_id": "DOC-12",
+    "pista_num": "12",
+    "titulo_full": "Pista 12: El Aula de Tres Generaciones",
+    "titulo_corto": "El Aula de Tres Generaciones",
+    "titulo": "Pista 12: El Aula de Tres Generaciones",
+    "area": "Ciencias Sociales e Historia / Bilingüismo",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "La profesora organizó momentos humanos memorables, como celebrar cumpleaños a través de las pantallas o debatir noticias actuales. Aprendió a sintetizar los contenidos en presentaciones breves para dar más tiempo a la conversación rica entre estudiantes.",
+    "estrategia": "Implementar cuadros comparativos y análisis de casos reales: utilizar diapositivas breves para presentar ideas clave y abrir de inmediato espacio para el debate de opinión y la reflexión en grupos.",
+    "prompt": "🤖 Prompt para Análisis de Casos y Debate Ciudadano\n\"Actúa como un docente de ciencias sociales enfocado en el pensamiento crítico. Diseña una actividad de debate breve (20 minutos) basada en una noticia sencilla sobre el cuidado del medio ambiente en la ciudad. Incluye 3 preguntas contrapuestas para guiarlos y pautas para que dialoguen con respeto.\""
+  },
+  {
+    "doc_id": "DOC-13",
+    "pista_num": "13",
+    "titulo_full": "Pista 13: La Pedagogía del Equilibrio",
+    "titulo_corto": "La Pedagogía del Equilibrio",
+    "titulo": "Pista 13: La Pedagogía del Equilibrio",
+    "area": "Tecnología e Informática",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "El profe tomó la decisión humanizada de priorizar la sustentación oral y la lógica de los alumnos por encima de exigir cámaras encendidas a quienes tenían mala conexión. Enseñó que la tecnología debe estar al servicio de las personas y no al revés.",
+    "estrategia": "Desarrollar el pensamiento computacional sin pantallas (actividades *unplugged*): usar juegos de lógica con tarjetas, instrucciones paso a paso humanas y diálogos donde el alumno explique cómo solucionó un problema.",
+    "prompt": "🤖 Prompt para Pensamiento Computacional Desenchufado (*Unplugged*)\n\"Actúa como un profesor de tecnología e informática. Diseña una dinámica de pensamiento computacional sin necesidad de computadores (*unplugged*) para explicar qué es un algoritmo usando la preparación de una receta o un juego de pasos en el salón. Describe la instrucción paso a paso de forma amena.\""
+  },
+  {
+    "doc_id": "DOC-14",
+    "pista_num": "14",
+    "titulo_full": "Pista 14: El Laboratorio en la Cocina",
+    "titulo_corto": "El Laboratorio en la Cocina",
+    "titulo": "Pista 14: El Laboratorio en la Cocina",
+    "area": "Coordinación Académica y Pedagogía Infantil",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "La docente utilizó Paint como su tablero digital hecho a mano para explicar a su manera. Como directiva, construyó acuerdos de paciencia y confianza con los maestros y familias, recordando que la gestión educativa debe ser siempre cercana y comprensiva.",
+    "estrategia": "Construir decálogos de convivencia y acuerdos claros de aula: establecer pautas amables para la escucha activa, la participación organizada y el uso con sentido de las herramientas digitales.",
+    "prompt": "🤖 Prompt para Decálogos de Convivencia y Acuerdos Pedagógicos\n\"Actúa como un directivo docente enfocado en el clima escolar positivo. Ayúdame a redactar un decálogo amigable de 5 acuerdos de convivencia digital y uso responsable del celular en el aula, redactado en un lenguaje positivo, claro y motivador para estudiantes y familias.\""
+  },
+  {
+    "doc_id": "DOC-15",
+    "pista_num": "15",
+    "titulo_full": "Pista 15: La Palabra sobre la Imagen",
+    "titulo_corto": "La Palabra sobre la Imagen",
+    "titulo": "Pista 15: La Palabra sobre la Imagen",
+    "area": "Lengua Castellana y Proceso Lecto-Escritor",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "En los grados iniciales, la maestra estableció rutinas claras de escucha y normas sencillas para tomar la palabra. Descubrió que al combinar la lectura de cuentos con presentaciones sencillas, los niños fortalecieron enormemente su expresión verbal.",
+    "estrategia": "Evaluar mediante sustentación oral y diálogo guiado: hacer preguntas cortas al final de las lecturas para que los alumnos cuenten con sus propias palabras lo que entendieron y compartan sus reflexiones.",
+    "prompt": "🤖 Prompt para Evaluación Formativa de la Expresión Oral\n\"Actúa como docente de lenguaje y lectura. Diseña una pauta sencilla de retroalimentación oral en 3 pasos para evaluar cuando un estudiante cuenta un cuento o expone una idea frente al grupo. La pauta debe enfocarse en resaltar lo positivo, hacer una pregunta para profundizar y motivarlo a seguir hablando.\""
+  },
+  {
+    "doc_id": "DOC-16",
+    "pista_num": "16",
+    "titulo_full": "Pista 16: La Orquesta de los Micrófonos",
+    "titulo_corto": "La Orquesta de los Micrófonos",
+    "titulo": "Pista 16: La Orquesta de los Micrófonos",
+    "area": "Ciencias Sociales y Ciencia Política",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "Un estudiante tímido que casi no hablaba en clase presencial comenzó a escribir largos mensajes en el chat para compartir reflexiones muy profundas. La profesora descubrió que la tecnología abrió puertas a nuevas formas de expresión para quienes antes callaban.",
+    "estrategia": "Aprovechar espacios de participación escrita y foros de opinión: combinar el diálogo en clase con pequeños muros colaborativos digitales donde los estudiantes respondan preguntas breves a su ritmo.",
+    "prompt": "🤖 Prompt para Muros de Opinión y Diálogo Ciudadano\n\"Actúa como un docente de ciencias sociales y ciudadanía. Genera 3 preguntas detonantes y reflexivas sobre la convivencia democrática en el colegio para que los estudiantes respondan en un foro o muro colaborativo. Asegúrate de que las preguntas motiven a los estudiantes más tímidos a dar su opinión.\""
+  },
+  {
+    "doc_id": "DOC-17",
+    "pista_num": "17",
+    "titulo_full": "Pista 17: El Receso de los Chistes",
+    "titulo_corto": "El Receso de los Chistes",
+    "titulo": "Pista 17: El Receso de los Chistes",
+    "area": "Matemáticas y Física (Innovación y Humor)",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "El profesor decidió institucionalizar los últimos 5 minutos de su clase como 'el receso de chistes'. Usó la risa y el buen humor como la mejor estrategia para liberar el estrés, conectar con los jóvenes y hacer amables las materias más exigentes.",
+    "estrategia": "Incorporar pausas de humor y acertijos lógicos en clase: usar juegos de palabras, adivinanzas numéricas o pequeños chistes al final de temas complejos para mantener un ambiente de aula relajado y motivante.",
+    "prompt": "🤖 Prompt para Pausas de Humor Educativo y Acertijos Lógicos\n\"Actúa como un profesor lúdico de matemáticas. Diseña una lista de 3 acertijos lógicos y juegos de palabras matemáticos breves para usar como pausa activa o cierre relajante de clase (de 5 minutos). Cada acertijo debe incluir su solución explicada de forma sencilla y divertida.\""
+  },
+  {
+    "doc_id": "DOC-18",
+    "pista_num": "18",
+    "titulo_full": "Pista 18: Museos sin Fronteras",
+    "titulo_corto": "Museos sin Fronteras",
+    "titulo": "Pista 18: Museos sin Fronteras",
+    "area": "Educación Artística y Plástica",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "La docente aprovechó la tecnología para llevar a sus estudiantes a recorridos virtuales por más de 80 museos del mundo desde la pantalla. Luego, los guió para recrear las obras de arte con pintura, cartón y materiales reciclables de su propia casa.",
+    "estrategia": "Conectar la exploración estética digital con la creación plástica manual: mostrar imágenes o videos breves de obras famosas y proponer retos de creación con materiales reciclables que los alumnos tengan a la mano.",
+    "prompt": "🤖 Prompt para Apreciación Artística y Creación con Reciclaje\n\"Actúa como una profesora creativa de educación artística. Diseña una guía de trabajo de 30 minutos donde los estudiantes observen una obra de arte o escultura famosa y luego la recreen usando elementos reciclables del hogar (cajas, tapas, papel). Incluye 2 preguntas para reflexionar sobre lo que sintieron al crear.\""
+  },
+  {
+    "doc_id": "DOC-19",
+    "pista_num": "19",
+    "titulo_full": "Pista 19: El Títere que Aprendió a Enseñar",
+    "titulo_corto": "El Títere que Aprendió a Enseñar",
+    "titulo": "Pista 19: El Títere que Aprendió a Enseñar",
+    "area": "Inglés y Ciencias en Educación Infantil",
+    "album": "Álbum 2: La Alquimia Pedagógica",
+    "vivencia": "Para captar la atención de los más pequeños, la profe creó a 'Mr. Whiskers', un gatito títere que solo hablaba inglés. Además, animó con herramientas sencillas los dibujos de los niños, llenándolos de orgullo y ganas de participar.",
+    "estrategia": "Usar personajes guiados y proyectos creativos animados: incorporar un títere o personaje simbólico para hacer preguntas curiosas e interactuar con los alumnos en idiomas o ciencias.",
+    "prompt": "🤖 Prompt para Personajes Pedagógicos e Indagación Curiosa\n\"Actúa como una educadora e investigadora en didáctica infantil. Diseña el guion breve de presentación (2 minutos) para un personaje de títere o mascota del aula que le enseñe a los niños curiosidades sobre los animales o la naturaleza en inglés. Incluye 2 preguntas interactivas para hacerle al grupo.\""
+  }
+]
 
-Incluye:
-1. Nombre de la actividad y objetivo pedagógico.
-2. Instrucción paso a paso integrando expresión corporal y cuentos animados.
-3. Una consigna de reflexión para la familia.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-        },
-        {
-            "id": "p2",
-            "titulo": "Pista 02: Detrás del Cuadro Negro",
-            "docente": "Susy Téllez",
-            "area": "Educación Inicial y Preescolar",
-            "imagen": "images/susy_tellez.png",
-            "sinopsis": "Relato sobre la incertidumbre inicial y cómo el confinamiento impulsó la exploración de recursos tecnológicos variados para enriquecer el lenguaje infantil.",
-            "prompt": """Actúa como educador en lenguaje infantil. Genera una secuencia de 4 actividades gamificadas para animación a la lectura en primer grado utilizando presentaciones digitales interactivas. 
+st.markdown('<div class="title-neon">🎧 SINTONÍA DOCENTE</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle-neon">Ecosistema Transmedia de Resignificación Docente • Universidad de Nariño</div>', unsafe_allow_html=True)
 
-Estructura:
-1. Nivel de dificultad y recurso interactivo sugerido.
-2. Consigna para el estudiante.
-3. Criterio de evaluación formativa.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-        },
-        {
-            "id": "p3",
-            "titulo": "Pista 03: El Abrazo que Atraviesa la Pantalla",
-            "docente": "Kelly Fernández",
-            "area": "Básica Primaria",
-            "imagen": "images/kelly_fernandez.png",
-            "sinopsis": "Experiencia centrada en la empatía, el acompañamiento socioemocional y la contención frente a las brechas de conectividad de cada hogar.",
-            "prompt": """Actúa como psicopedagogo escolar. Diseña un taller de acompañamiento socioemocional de 15 minutos para iniciar la jornada en primaria, enfocado en la escucha activa y la empatía. 
+st.sidebar.markdown("<h2 style='color:#00F0FF; text-shadow:0 0 8px #00F0FF;'>🎧 Sintonía Docente</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Ecosistema Transmedia de Resignificación</p>", unsafe_allow_html=True)
+st.sidebar.divider()
 
-Incluye:
-1. Guion verbal de apertura para el docente.
-2. 3 preguntas detonantes de diálogo en círculo.
-3. Actividad de cierre reflexivo.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-        },
-        {
-            "id": "p4",
-            "titulo": "Pista 04: Caminar sobre la Incertidumbre",
-            "docente": "Diana Gutiérrez",
-            "area": "Básica Primaria",
-            "imagen": "images/diana_gutierrez.png",
-            "sinopsis": "Vivencia en Jardín sobre cómo mantener la motivación de los niños pequeños y la hermosa anécdota de las tarjetas digitales en Paint para el Día del Profesor.",
-            "prompt": """Actúa como docente de tecnología infantil. Diseña un proyecto de aula de 3 sesiones para enseñar el uso básico de herramientas de dibujo digital (como Paint) integrando tarjetas de afecto. 
-
-Incluye:
-1. Objetivos de motricidad fina digital.
-2. Guía paso a paso adaptada a transición y jardín.
-3. Rúbrica cualitativa de desempeño.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
-        },
-        {
-            "id": "p5",
-            "titulo": "Pista 05: El Movimiento Desafiante",
-            "docente": "Michael Acosta",
-            "area": "Educación Física y Deporte",
-            "imagen": "images/michael_acosta.png",
-            "sinopsis": "Reinvención de la educación física en casa utilizando tarros de aseo, escobas y cojines para armar circuitos motrices en espacios reducidos.",
-            "prompt": """Actúa como educador físico escolar. Crea un circuito de motricidad y acondicionamiento físico escolar utilizando objetos domésticos reutilizables (tarros, cojines, cintas) para realizar en espacios reducidos. 
-
-Estructura:
-1. Calentamiento articulado.
-2. 4 estaciones de movimiento progresivo.
-3. Técnica de respiración consciente al cierre.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-        },
-        {
-            "id": "p6",
-            "titulo": "Pista 06: Sanar la Brecha con Amor",
-            "docente": "Manuela Chamorro",
-            "area": "Matemáticas en Primaria",
-            "imagen": "images/manuela_chamorro.png",
-            "sinopsis": "Anécdota del gato caminante en prejardín y las ruletas aleatorias para motivar la participación sin temor en las clases de matemáticas.",
-            "prompt": """Actúa como especialista en didáctica de las matemáticas primarias. Diseña una estrategia de gamificación para pensamiento numérico utilizando ruletas interactivas de participación aleatoria y retos rápidos. 
-
-Incluye:
-1. 5 ejercicios de cálculo mental contextualizado.
-2. Reglas de juego participativo.
-3. Pauta de retroalimentación positiva.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"
-        },
-        {
-            "id": "p7",
-            "titulo": "Pista 07: El Lenguaje de la Invención",
-            "docente": "Jimmy Cerquera",
-            "area": "Lenguas Modernas e Inglés",
-            "imagen": "images/jimmy_cerquera.png",
-            "sinopsis": "Transformación de la enseñanza del inglés mediante retos interactivos, producciones audiovisuales y pedagogía lúdica sin caer en el llenado pasivo de guías.",
-            "prompt": """Actúa como docente de Inglés (EFL). Crea un desafío de simulación de rol (Role-Play) de 15 minutos para primaria, donde los estudiantes resuelvan un 'misterio escolar' usando vocabulario cotidiano. 
-
-Incluye:
-1. Banco de expresiones clave (chunks de lenguaje).
-2. Tarjetas de rol interactivo.
-3. Rúbrica de expresión oral y autoevaluación.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"
-        }
-    ],
-    "Álbum 2: La alquimia pedagógica": [
-        {
-            "id": "p8",
-            "titulo": "Pista 08: La Física de la Conexión",
-            "docente": "John Jairo Londoño",
-            "area": "Física y Ciencias Exactas",
-            "imagen": "images/john_jairo_londono.png",
-            "sinopsis": "Anécdota de dar clase a los abuelitos y padres que acompañaban a los niños, y el uso de cámaras enfocadas al tablero de la casa para explicar física.",
-            "prompt": """Actúa como docente de Ciencias Físicas. Diseña una plantilla de clase invertida (Flipped Classroom) para física de secundaria sobre mecánica y movimiento. 
-
-Incluye:
-1. Estructura para video explicativo breve de 3 minutos.
-2. 3 preguntas de comprobación previa.
-3. Taller de resolución de problemas contextualizados en vivo.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
-        },
-        {
-            "id": "p9",
-            "titulo": "Pista 09: Cartografía de una Metamorfosis",
-            "docente": "Adriana Martínez",
-            "area": "Ciencias Sociales",
-            "imagen": "images/adriana_martinez.png",
-            "sinopsis": "Uso de fuentes históricas digitales y prensa comparada para transformar la crisis en un laboratorio de pensamiento crítico e historia en tiempo real.",
-            "prompt": """Actúa como historiadora y pedagoga de Ciencias Sociales. Diseña una guía de análisis crítico comparativo entre dos noticias históricas sobre pandemias o transformaciones globales. 
-
-Incluye:
-1. Criterios de verificación de fuentes informativas.
-2. 4 preguntas socráticas de contraste histórico.
-3. Matriz de análisis de sesgos mediáticos.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"
-        },
-        {
-            "id": "p10",
-            "titulo": "Pista 10: La Armonía de la Palabra",
-            "docente": "Gloria Rosero",
-            "area": "Lengua Extranjera Francés",
-            "imagen": "images/gloria_rosero.png",
-            "sinopsis": "Integración de recursos fonéticos multimedia y expresiones culturales en red para fortalecer la competencia comunicativa en francés con calidez humana.",
-            "prompt": """Actúa como docente de Francés Lengua Extranjera (FLE). Diseña un taller de fonética y pronunciación apoyado en recursos multimedia breves para nivel principiante (A1). 
-
-Estructura:
-1. Ejercicios de discriminación auditiva fonética.
-2. Trabalenguas culturales francófonos.
-3. Pauta de grabación de audio reflexiva.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3"
-        },
-        {
-            "id": "p11",
-            "titulo": "Pista 11: El Retorno a lo Esencial",
-            "docente": "Nazly Bolaños",
-            "area": "Español y Literatura",
-            "imagen": "images/nazly_bolanos.png",
-            "sinopsis": "Postura pedagógica de 'pedagogía del equilibrio', revalorizando la lectura en libro impreso, la escritura en papel y el aprendizaje manipulativo tras el hiperconsumo digital.",
-            "prompt": """Actúa como docente especialista en Literatura. Diseña un taller de comprensión lectora profunda y escritura creativa en papel (máximo 45 minutos) sin pantallas. 
-
-Incluye:
-1. Consignas de lectura pausada de un texto impreso.
-2. 3 detonantes de escritura a mano en libreta.
-3. Rúbrica de sensibilidad poética y estética.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-        },
-        {
-            "id": "p12",
-            "titulo": "Pista 12: La Magia de la Adaptación",
-            "docente": "Andrés Ayala",
-            "area": "Ciencias Naturales y Biología",
-            "imagen": "images/andres_ayala.png",
-            "sinopsis": "Transformación de la mesa de la cocina en laboratorio de biología y exploración entusiasta de prompts de Inteligencia Artificial para la indagación científica.",
-            "prompt": """Actúa como biólogo y educador científico. Diseña una guía de laboratorio casero seguro con materiales de cocina (vinagre, bicarbonato, pigmentos vegetales) para explicar reacciones naturales. 
-
-Estructura:
-1. Tabla de variables independientes y dependientes.
-2. 3 preguntas de formulación de hipótesis científicas.
-3. Rúbrica cualitativa de informe de indagación.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-        },
-        {
-            "id": "p13",
-            "titulo": "Pista 13: Ventanas al Pensamiento Crítico",
-            "docente": "Alma Flor",
-            "area": "Ciencias Sociales y Política",
-            "imagen": "images/alma_flor.png",
-            "sinopsis": "Postura analítica y cautelosa frente a la IA, utilizándola con sentido ético para enseñar a verificar fuentes y dudar de las respuestas del algoritmo.",
-            "prompt": """Actúa como docente de Ciencias Políticas y Ética. Diseña una actividad de debate en aula donde los estudiantes evalúen un texto generado por IA sobre un hecho histórico relevante. 
-
-Incluye:
-1. Pauta para identificar sesgos del algoritmo de IA.
-2. Checklist de verificación en fuentes académicas reales.
-3. Rúbrica de argumentación crítica.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-        },
-        {
-            "id": "p14",
-            "titulo": "Pista 14: La Arquitectura de la Improvisación",
-            "docente": "Gerson Achury",
-            "area": "Tecnología e Informática",
-            "imagen": "images/gerson_achury.png",
-            "sinopsis": "Enseñar tecnología sin plataforma previa, dando prioridad a la sustentación oral y enseñando hoy a entrenar bots y prompts con visión sobria y crítica.",
-            "prompt": """Actúa como docente de Tecnología e Informática. Diseña una guía práctica para enseñar a estudiantes a estructurar 'prompts' efectivos de revisión lógica y sintáctica en proyectos tecnológicos. 
-
-Estructura:
-1. Anatomía de un prompt (Rol, Contexto, Tarea, Restricciones).
-2. 3 ejemplos comparativos (malo vs. excelente).
-3. Taller práctico de evaluación oral.""",
-            "audio_demo": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
-        }
-    ]
-}
-
-# --- BARRA LATERAL (CONTROLES Y NAVEGACIÓN) ---
-st.sidebar.markdown("<h2 style='color:#1DB954;'>🎧 Sintonía Docente</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#CCCCCC; font-style:italic;'>Ecosistema Transmedia de Resignificación Docente</p>", unsafe_allow_html=True)
-st.sidebar.markdown("---")
-
-album_seleccionado = st.sidebar.radio(
-    "📌 Selecciona el Álbum / Volumen:",
-    list(pistas.keys())
+modo_vista = st.sidebar.radio(
+    "📌 Selecciona la Colección:",
+    ["Álbum 1: El Latido en el Silencio (DOC-01 a DOC-08)", 
+     "Álbum 2: La Alquimia Pedagógica (DOC-09 a DOC-19)", 
+     "Ver Todas las 19 Fichas Pedagógicas"]
 )
 
-lista_pistas = pistas[album_seleccionado]
-nombres_pistas = [p["titulo"] for p in lista_pistas]
-
-st.sidebar.markdown("<br>", unsafe_allow_html=True)
-pista_tit_seleccionada = st.sidebar.selectbox(
-    "🎵 Selecciona la Pista Sonora:",
-    nombres_pistas
-)
-
-# Buscar objeto de la pista seleccionada
-pista_actual = next(p for p in lista_pistas if p["titulo"] == pista_tit_seleccionada)
-
-# --- ENCABEZADO PRINCIPAL DEL ÁLBUM ---
-if "Álbum 1" in album_seleccionado:
-    st.markdown("""
-    <div class="album-header-1">
-        <h1 style="margin:0; color:#FFFFFF; font-size:2em;">🎧 Álbum 1: El latido en el silencio</h1>
-        <p style="margin:6px 0 0 0; color:#FFB703; font-size:1.15em; font-weight:600;">Volumen 1: Historias del Afecto, el Vínculo y la Resiliencia Humana</p>
-    </div>
-    """, unsafe_allow_html=True)
+if "Álbum 1" in modo_vista:
+    pistas_filtradas = [p for p in pistas if p.get("album") == "Álbum 1: El Latido en el Silencio"]
+elif "Álbum 2" in modo_vista:
+    pistas_filtradas = [p for p in pistas if p.get("album") == "Álbum 2: La Alquimia Pedagógica"]
 else:
-    st.markdown("""
-    <div class="album-header-2">
-        <h1 style="margin:0; color:#FFFFFF; font-size:2em;">🎧 Álbum 2: La alquimia pedagógica</h1>
-        <p style="margin:6px 0 0 0; color:#FFB703; font-size:1.15em; font-weight:600;">Volumen 2: Reinvención Didáctica, Innovación y Mediación Tecnológica con Sentido</p>
-    </div>
-    """, unsafe_allow_html=True)
+    pistas_filtradas = pistas
 
-# --- ÁREA PRINCIPAL DIVIDIDA EN 2 CUADROS LIMPIOS ---
-col1, col2 = st.columns([1, 1], gap="large")
+opciones_titulos = [p["titulo"] for p in pistas_filtradas] if pistas_filtradas else ["Sin pistas disponibles"]
 
-with col1:
-    st.markdown('<div class="track-card">', unsafe_allow_html=True)
-    
-    col_img, col_info = st.columns([1, 2.8])
-    with col_img:
-        # Si existe la imagen personalizada del docente, la muestra; si no, muestra el avatar de respaldo
-        if os.path.exists(pista_actual["imagen"]):
-            st.image(pista_actual["imagen"], use_column_width=True)
+st.sidebar.markdown("<p style='color:#00F0FF; font-weight:bold; margin-top:15px;'>🎵 Selecciona la Pista Sonora:</p>", unsafe_allow_html=True)
+
+pista_seleccionada_titulo = st.sidebar.selectbox(
+    "Despliega para elegir la pista:",
+    opciones_titulos,
+    index=0
+)
+
+pista_actual = next((p for p in pistas_filtradas if p["titulo"] == pista_seleccionada_titulo), pistas[0] if pistas else {})
+
+tab_reproductor, tab_catalogo, tab_metodologia = st.tabs([
+    "🎙️ Reproductor y Ficha Pedagógica", 
+    "📚 Catálogo Completo (19 Fichas)", 
+    "ℹ️ Acerca del Ecosistema"
+])
+
+with tab_reproductor:
+    if pista_actual:
+        if pista_actual.get("album") == "Álbum 1: El Latido en el Silencio":
+            header_class = "album-header-1"
+            album_color = "#00F0FF"
         else:
-            st.markdown("""
-            <div style="background-color:#282828; width:85px; height:85px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #1DB954; font-size:38px; margin-bottom:10px;">
-                👤
-            </div>
-            """, unsafe_allow_html=True)
+            header_class = "album-header-2"
+            album_color = "#FF007F"
             
-    with col_info:
-        st.markdown(f'<div class="badge-area">{pista_actual["area"]}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="teacher-name">{pista_actual["docente"]}</div>', unsafe_allow_html=True)
-    
-    st.markdown("<hr style='border-color:#333; margin:15px 0;'>", unsafe_allow_html=True)
-    st.markdown(f'<div class="track-title">{pista_actual["titulo"]}</div>', unsafe_allow_html=True)
-    st.markdown(f'<p style="color:#DDDDDD; font-size:1.05em; line-height:1.6;"><b>📝 Sinopsis de la Vivencia:</b><br>{pista_actual["sinopsis"]}</p>', unsafe_allow_html=True)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<h4 style='color:#1DB954; margin-bottom:8px;'>🎙️ Reproductor del Relato Sonoro (1.5 min)</h4>", unsafe_allow_html=True)
-    st.audio(pista_actual["audio_demo"], format="audio/mp3")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with col2:
-    st.markdown('<div class="prompt-card">', unsafe_allow_html=True)
-    st.markdown("<h3 style='color:#1DB954; margin-top:0;'>🤖 Ficha de Transferibilidad & Prompt de IA</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='color:#E0E0E0; font-size:0.95em;'>Consigna optimizada para la práctica pedagógica en esta asignatura:</p>", unsafe_allow_html=True)
-    
-    # Bloque de código con la función nativa de copia rápida en la esquina superior derecha
-    st.code(pista_actual["prompt"], language="markdown")
-    
-    # Tip explicativo funcional para copiar con 1 clic sin botones inútiles
-    st.markdown("""
-    <div class="copy-tip">
-        📋 <b>¿Cómo copiar el prompt?</b> Pasa el cursor sobre la casilla negra de arriba y haz clic en el icono de copiar (📋) en la esquina superior derecha para pegarlo en ChatGPT, Gemini o Claude.
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown(f'''
+        <div class="{header_class}">
+            <span style="background-color:{album_color}; color:#000000; font-weight:bold; padding:4px 12px; border-radius:12px; font-size:0.85em;">{pista_actual.get("album", "")}</span>
+            <h2 style="color:#FFFFFF; margin-top:10px; margin-bottom:5px; text-shadow:0 0 10px {album_color};">{pista_actual.get("titulo", "")}</h2>
+            <p style="color:#E0E0E0; font-size:1.05em; margin:0;">📚 <b>Área Curricular:</b> {pista_actual.get("area", "")}</p>
+        </div>
+        ''', unsafe_allow_html=True)
         
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("<h4 style='color:#00F0FF; margin-bottom:8px;'>🎙️ Reproductor de Voz y Sonido:</h4>", unsafe_allow_html=True)
+        
+        doc_code = pista_actual.get("doc_id", "DOC-01")
+        pista_num = pista_actual.get("pista_num", "01")
+        num_int = int(pista_num)
+        
+        # Búsqueda ultra flexible de archivos de audio (MP3, OGG, MP4, WAV, M4A)
+        # en raíz y en carpetas sintonia_docente / audio
+        posibles_rutas = []
+        exts = ["ogg", "mp4", "mp3", "wav", "m4a", "OGG", "MP4", "MP3"]
+        prefixes = ["", "sintonia_docente/", "audio/"]
+        
+        names = [
+            f"pista_{pista_num}", f"pista_{num_int}",
+            f"pista{pista_num}", f"pista{num_int}",
+            f"Pista_{pista_num}", f"Pista_{num_int}",
+            f"Pista {pista_num}", f"Pista {num_int}",
+            f"{doc_code}", f"{doc_code.lower()}",
+            f"{pista_num}", f"{num_int}"
+        ]
+        
+        for prefix in prefixes:
+            for name in names:
+                for ext in exts:
+                    posibles_rutas.append(f"{prefix}{name}.{ext}")
+        
+        audio_encontrado = None
+        for ruta in posibles_rutas:
+            if os.path.exists(ruta):
+                audio_encontrado = ruta
+                break
+                
+        if audio_encontrado:
+            st.audio(audio_encontrado)
+            st.caption(f"🔊 Reproduciendo archivo: `{audio_encontrado}`")
+        else:
+            st.warning(f"⚠️ No se encontró el archivo de audio para {doc_code} (Pista {pista_num}). Buscando `pista_{pista_num}.ogg` o `.mp4`...")
 
-st.markdown("<br><hr style='border-color:#333;'>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#888888; font-size:0.9em;'>Ecosistema Transmedia Sintonía Docente • Universidad de Nariño • Tesis de Maestría 2026</p>", unsafe_allow_html=True)
+        st.markdown(f'''
+        <div class="ficha-card">
+            <span class="ficha-badge">CÓDIGO: {pista_actual.get("doc_id", "")}</span>
+            <span class="area-badge">ÁREA: {pista_actual.get("area", "")}</span>
+            
+            <div class="section-title">💬 Vivencia del Profe:</div>
+            <div class="text-box">{pista_actual.get("vivencia", "")}</div>
+            
+            <div class="section-title">💡 Estrategia de Aula Replicable:</div>
+            <div class="text-box">{pista_actual.get("estrategia", "")}</div>
+            
+            <div class="section-title">🤖 Prompt de Inteligencia Artificial Sugerido (Listo para usar):</div>
+            <div class="prompt-box">{pista_actual.get("prompt", "")}</div>
+        </div>
+        ''', unsafe_allow_html=True)
+        
+        st.markdown("**Copiar Prompt de IA:**")
+        st.code(pista_actual.get("prompt", ""), language="markdown")
+
+with tab_catalogo:
+    st.markdown("<h3 style='color:#00F0FF;'>📚 Compendio de las 19 Fichas Pedagógicas de la Investigación</h3>", unsafe_allow_html=True)
+    st.write("Explora de forma directa las vivencias, estrategias y prompts desarrollados a partir de las narrativas de los docentes de Popayán (DOC-01 a DOC-19).")
+    
+    search_term = st.text_input("🔍 Buscar por palabra clave (ej. inglés, matemáticas, inicial, títere, juego):", "")
+    
+    for p in pistas:
+        if not search_term or search_term.lower() in p["titulo"].lower() or search_term.lower() in p["area"].lower() or search_term.lower() in p["vivencia"].lower():
+            with st.expander(f"🔹 {p['doc_id']} — {p['titulo_corto']} | 📚 {p['area']}"):
+                st.markdown(f"**Área:** {p['area']}")
+                st.markdown(f"**Vivencia del Profe:** {p['vivencia']}")
+                st.markdown(f"**Estrategia de Aula:** {p['estrategia']}")
+                st.markdown("**Prompt de IA Sugerido:**")
+                st.code(p['prompt'], language="markdown")
+
+with tab_metodologia:
+    st.markdown("<h3 style='color:#00F0FF;'>ℹ️ Sobre el Ecosistema Transmedia 'Sintonía Docente'</h3>", unsafe_allow_html=True)
+    st.markdown("""
+    **Investigación:** Resignificación de la Experiencia Docente sobre la Enseñanza Mediada por Tecnología  
+    **Investigadora:** Catalina Díaz Chíquiza  
+    **Asesora:** Mg. Lady Johana Gómez Bernal  
+    **Institución:** Universidad de Nariño — Maestría en Educación Virtual (e-MEV)  
+
+    ---
+    """)
