@@ -14,7 +14,12 @@ st.set_page_config(
 st.markdown("""
 <style>
     .stApp {
-        background-color: #0A0E17 !important;
+        background-color: #0d1117 !important;
+        background-image: 
+            linear-gradient(335deg, rgba(0,0,0,0.85) 0%, rgba(13,17,23,0.92) 100%),
+            linear-gradient(90deg, rgba(20,20,20,0.5) 1px, transparent 1px),
+            linear-gradient(rgba(20,20,20,0.5) 1px, transparent 1px) !important;
+        background-size: 100% 100%, 40px 20px, 40px 20px !important;
         color: #F0F4F8 !important;
         font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
@@ -63,16 +68,17 @@ st.markdown("""
         color: #000000 !important;
     }
 
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave&family=Caveat:wght@700&display=swap');
+
     .title-neon {
-        font-family: 'Freestyle Script', 'Brush Script MT', 'Sedgwick Ave', 'Caveat', cursive !important;
-        font-size: 3.8em !important;
-        font-weight: 400 !important;
+        font-size: 2.8em;
+        font-weight: 700;
+        font-family: 'Permanent Marker', 'Sedgwick Ave', 'Caveat', cursive, sans-serif !important;
         color: #39FF14 !important;
-        text-shadow: 0 0 8px rgba(57, 255, 20, 0.8), 0 0 18px rgba(57, 255, 20, 0.4), 2px 2px 4px #000000 !important;
-        text-align: center !important;
-        margin-top: 10px !important;
-        margin-bottom: 2px !important;
-        letter-spacing: 1px !important;
+        text-shadow: 0 0 8px #39FF14, 0 0 15px rgba(57, 255, 20, 0.4), 2px 2px 4px #000000;
+        text-align: center;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
     }
     .subtitle-neon {
         font-size: 1.1em;
@@ -161,47 +167,6 @@ st.markdown("""
         font-size: 1.02em;
         margin-top: 10px;
     }
-
-    .box-vivencia {
-        background-color: #121824;
-        border-radius: 14px;
-        padding: 20px;
-        border: 2px solid #00F0FF;
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
-        min-height: 220px;
-    }
-    
-    .box-estrategia {
-        background-color: #121824;
-        border-radius: 14px;
-        padding: 20px;
-        border: 2px solid #39FF14;
-        box-shadow: 0 0 12px rgba(57, 255, 20, 0.2);
-        min-height: 220px;
-    }
-
-    .box-title-vivencia {
-        color: #00F0FF;
-        font-size: 1.2em;
-        font-weight: 800;
-        margin-bottom: 12px;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
-    }
-
-    .box-title-estrategia {
-        color: #39FF14;
-        font-size: 1.2em;
-        font-weight: 800;
-        margin-bottom: 12px;
-        text-shadow: 0 0 6px rgba(57, 255, 20, 0.4);
-    }
-
-    .box-text {
-        color: #F0F4F8;
-        font-size: 1.02em;
-        line-height: 1.6;
-    }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -450,10 +415,10 @@ def cargar_pistas():
 pistas = cargar_pistas()
 
 st.markdown('<div class="title-neon">🎧 SINTONÍA DOCENTE</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle-neon">SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA • UNIVERSIDAD DE NARIÑO</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle-neon">SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA • Universidad de Nariño</div>', unsafe_allow_html=True)
 
 st.sidebar.markdown("<h2 style='color:#00F0FF; text-shadow:0 0 8px #00F0FF;'>🎧 Sintonía Docente</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Ecosistema Multimodal de Resignificación</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Voces y Resignificaciones de la Práctica Pedagógica</p>", unsafe_allow_html=True)
 st.sidebar.divider()
 
 modo_vista = st.sidebar.radio(
@@ -531,32 +496,22 @@ with tab_reproductor:
             st.info(f"🎧 **Audio detectado:** Al colocar la carpeta `sintonia_docente` con los archivos MP3 (`{doc_code}.mp3`), este reproductor los cargará automáticamente.")
 
         st.markdown(f'''
-        <div style="margin-top:20px; margin-bottom:15px;">
+        <div class="ficha-card">
             <span class="ficha-badge">CÓDIGO: {pista_actual.get("doc_id", "")}</span>
             <span class="area-badge">ÁREA: {pista_actual.get("area", "")}</span>
+            
+            <div class="section-title">💬 Vivencia del Profe:</div>
+            <div class="text-box">{pista_actual.get("vivencia", "")}</div>
+            
+            <div class="section-title">💡 Estrategia de Aula Replicable:</div>
+            <div class="text-box">{pista_actual.get("estrategia", "")}</div>
+            
+            <div class="section-title">🤖 Prompt de Inteligencia Artificial Sugerido (Listo para usar):</div>
+            <div class="prompt-box">{pista_actual.get("prompt", "")}</div>
         </div>
         ''', unsafe_allow_html=True)
-
-        col_box1, col_box2 = st.columns([1, 1], gap="medium")
-
-        with col_box1:
-            st.markdown(f'''
-            <div class="box-vivencia">
-                <div class="box-title-vivencia">💬 Vivencia del Profe:</div>
-                <div class="box-text">{pista_actual.get("vivencia", "")}</div>
-            </div>
-            ''', unsafe_allow_html=True)
-
-        with col_box2:
-            st.markdown(f'''
-            <div class="box-estrategia">
-                <div class="box-title-estrategia">💡 Estrategia de Aula Replicable:</div>
-                <div class="box-text">{pista_actual.get("estrategia", "")}</div>
-            </div>
-            ''', unsafe_allow_html=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("<h4 style='color:#39FF14;'>🤖 Prompt de Inteligencia Artificial Sugerido (Listo para usar):</h4>", unsafe_allow_html=True)
+        
+        st.markdown("**Copiar Prompt de IA:**")
         st.code(pista_actual.get("prompt", ""), language="markdown")
 
 with tab_catalogo:
