@@ -596,7 +596,7 @@ with tab_metodologia:
 
     ---
 
-    ### 🎯 Objetivo del Ecosistema (Objetivo Específico 3):
+    ### 🎯 Objetivo del Ecosistema:
     El producto comunicativo *Sintonía Docente* ha sido co-construido como una herramienta multimodal y de acceso libre para la comunidad educadora. Cada ficha integra la memoria viva de la pandemia con estrategias didácticas y *prompts* de Inteligencia Artificial diseñados para enriquecer la labor docente actual en entornos presenciales, híbridos y virtuales.
 
     **Nota Ética:** La totalidad de los relatos ha sido anonimizada bajo la codificación de **DOC-01 a DOC-19** para resguardar la identidad de los maestros participantes de las instituciones educativas privadas de Popayán.
