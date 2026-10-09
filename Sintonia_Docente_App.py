@@ -461,7 +461,7 @@ st.markdown('<div class="subtitle-neon">SINTONÍA DOCENTE: VOCES Y RESIGNIFICACI
 
 # BARRA LATERAL
 st.sidebar.markdown("<h2 style='color:#39FF14; font-family: Freestyle Script, Caveat, cursive;'>🎙️ Sintonía Docente</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Ecosistema Multimodal de Resignificación</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#E0E0E0; font-style:italic;'>Ecosistema de Resignificación Docente</p>", unsafe_allow_html=True)
 st.sidebar.divider()
 
 modo_vista = st.sidebar.radio(
@@ -589,9 +589,8 @@ with tab_catalogo:
 with tab_metodologia:
     st.markdown("<h3 style='color:#39FF14;'>ℹ️ Acerca de la Investigación</h3>", unsafe_allow_html=True)
     st.markdown("""
-    **Investigación:** Resignificación de la Experiencia Docente sobre la Enseñanza Mediada por Tecnología  
-    **Título de Tesis:** SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA  
-    **Investigadora:** Catalina Díaz Chíquiza  
+    **Investigación:** SINTONÍA DOCENTE: VOCES Y RESIGNIFICACIONES DE LA PRÁCTICA PEDAGÓGICA EN ENTORNOS TECNOLÓGICOS POSTPANDEMIA  
+    **Investigadora:** Catalina D. Chíquiza  
     **Asesora:** Mg. Lady Johana Gómez Bernal  
     **Institución:** Universidad de Nariño — Maestría en Educación Virtual (e-MEV)  
 
