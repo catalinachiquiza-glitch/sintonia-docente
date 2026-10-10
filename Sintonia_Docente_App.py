@@ -248,12 +248,9 @@ PISTAS = [
     {
         "doc_id": "DOC-07",
         "pista_num": "07",
-        "titulo_full": "Pista 07: Clases para los Abuelos que Terminaron Aprendiendo 
-Matemáticas",
-        "titulo": "Pista 07: Clases para los Abuelos que Terminaron Aprendiendo 
-Matemáticas",
-        "titulo_corto": "Clases para los Abuelos que Terminaron Aprendiendo 
-Matemáticas",
+        "titulo_full": "Pista 07: Clases para los Abuelos que Terminaron Aprendiendo Matemáticas",
+        "titulo": "Pista 07: Clases para los Abuelos que Terminaron Aprendiendo Matemáticas",
+        "titulo_corto": "Clases para los Abuelos que Terminaron Aprendiendo Matemáticas",
         "area": "Física y Ciencias Exactas",
         "album": "Álbum 1: El Latido en el Silencio",
         "vivencia": "El docente descubrió que al explicar temas complejos como la física, ver a los abuelos y padres sentados al lado de los niños aprendiendo juntos enriquecía el proceso. Perdió el miedo a las herramientas digitales y comenzó a grabar explicaciones breves con pizarras visuales.",
