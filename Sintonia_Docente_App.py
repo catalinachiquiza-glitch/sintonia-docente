@@ -284,9 +284,9 @@ PISTAS = [
     {
         "doc_id": "DOC-10",
         "pista_num": "10",
-        "titulo_full": "Pista 10: La Metamorfosis de la Voz",
-        "titulo": "Pista 10: La Metamorfosis de la Voz",
-        "titulo_corto": "La Metamorfosis de la Voz",
+        "titulo_full": "Pista 10: El Laboratorio que Cabía en una Cocina",
+        "titulo": "Pista 10: El Laboratorio que Cabía en una Cocina",
+        "titulo_corto": "El Laboratorio que Cabía en una Cocina",
         "area": "Ciencias Naturales y Biología",
         "album": "Álbum 2: La Alquimia Pedagógica",
         "vivencia": "El profesor no dejó morir la curiosidad científica y creó la estrategia de 'El laboratorio en mi cocina'. Con ingredientes caseros como repollo morado, vinagre y bicarbonato, demostró que la ciencia está viva en cualquier rincón del hogar.",
