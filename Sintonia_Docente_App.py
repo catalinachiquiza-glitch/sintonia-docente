@@ -176,9 +176,9 @@ PISTAS = [
     {
         "doc_id": "DOC-01",
         "pista_num": "01",
-        "titulo_full": "Pista 01: Las Voces Anónimas del Corazón",
-        "titulo": "Pista 01: Las Voces Anónimas del Corazón",
-        "titulo_corto": "Las Voces Anónimas del Corazón",
+        "titulo_full": "Pista 01: El Corazón De Las Voces Anónimas",
+        "titulo": "Pista 01: El Corazón De Las Voces Anónimas",
+        "titulo_corto": "El Corazón De Las Voces Anónimas",
         "area": "Francés y Lenguas Extranjeras",
         "album": "Álbum 1: El Latido en el Silencio",
         "vivencia": "En medio del aislamiento y la timidez inicial de hablar en pantalla, surgió un ejercicio de escritura en el que los estudiantes pudieron expresar de forma sincera sus temores y emociones sin temor al qué dirán. La profe descubrió que el lenguaje es, ante todo, un puente para conectarse con la vida de los muchachos.",
